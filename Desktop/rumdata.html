@@ -1,0 +1,311 @@
+<html>
+<head>
+	<title>
+sample test page
+</title>
+	<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous"></script>
+</head>
+<body>
+ 
+
+<p href= "views.php"> page views</p>
+
+
+<div  id = "output">
+	
+</div>
+
+<script type="text/javascript">
+
+
+	if (
+  !("performance" in window) ||
+  !("timing" in window.performance) ||
+  !("navigation" in window.performance)
+) {
+  document.getElementById("output").className = "";
+} else {
+  window.addEventListener(
+    "load",
+    function() {
+
+       function ipLookUp(){
+  $.ajax('http://ip-api.com/json')
+  .then(
+      function success(response) {
+           // console.log('User\'s Location Data is ', response);
+           // console.log('User\'s Country', response.country);
+              var t = performance.timing;
+      //Pageloadtime
+      var pageLoadTime = t.loadEventEnd - t.navigationStart;
+
+      // When DOM is ready
+      domInteractiveTime = t.domInteractive - t.domLoading;
+
+      // When both the DOM and CSSOM are ready
+      dcl = t.domContentLoadedEventStart - t.domLoading;
+      // When the page and all of its subresources are ready
+      domCompleteTime = t.domComplete - t.domLoading;
+
+      // Total time from start to load
+      loadTime = t.loadEventEnd - t.fetchStart;
+      // Time spent constructing the DOM tree
+      domReadyTime = t.domComplete - t.domInteractive;
+      // Time spent during redirection
+      redirectTime = t.redirectEnd - t.redirectStart;
+      // AppCache
+      appcacheTime = t.domainLookupStart - t.fetchStart;
+      // Time spent unloading documents
+      unloadEventTime = t.unloadEventEnd - t.unloadEventStart;
+      // Time spent during the request
+      requestTime = t.responseEnd - t.requestStart;
+      // Request to completion of the DOM loading
+      initDomTreeTime = t.domInteractive - t.responseEnd;
+      // Load event time
+      loadEventTime = t.loadEventEnd - t.loadEventStart;
+
+       network = NetworkInformation.type;
+
+       // ipLookUp();
+
+      // Time to First Paint
+      if (firstPaint === undefined) {
+        // All times are relative times to the start time within the
+        // same objects
+        var firstPaint = 0;
+        var firstPaintTime = 0;
+
+        // By bmdevel https://github.com/bmdevel/timing.js/blob/d5531b3b023367d467d3558061de8d8cf5b5ea79/timing.js  –––>
+        if (typeof t.msFirstPaint === "number") {
+          firstPaint = t.msFirstPaint;
+          firstPaintTime = firstPaint - t.navigationStart;
+          // All the rest
+        } else if (performance.getEntriesByName !== undefined) {
+          var firstPaintPerformanceEntry = performance.getEntriesByName(
+            "first-paint"
+          );
+          if (firstPaintPerformanceEntry.length === 1) {
+            firstPaintTime = firstPaintPerformanceEntry[0].startTime;
+            firstPaint = performance.timeOrigin + firstPaintTime;
+            firstPaintTime = firstPaintTime;
+          }
+        }
+      }
+
+      // console.log("event : WebPerfRUM");
+      // //PageLoadTime
+      // console.log("PageLoadTime :" + pageLoadTime + " ms");
+      // // Critical Rendering Path
+      // console.log("DOMInteractive :" + domInteractiveTime + "ms");
+      // console.log("DOMContentLoaded :" + dcl + " ms");
+      // console.log("DOMComplete :" + domCompleteTime + "ms");
+      // // Navigation Timing API metrics
+      // console.log("TotalTimeFromStartToLoad :" + loadTime + " ms");
+      // console.log("TimeSpentConstructingDOMTree :" + domReadyTime + " ms");
+      // console.log("TimeSpentDuringRedirection :" + redirectTime + " ms");
+      // console.log("AppCache :" + appcacheTime + " ms");
+      // console.log("TimeSpentUnloadingDocuments :" + unloadEventTime + " ms");
+      // console.log("TimeSpentDuringRequest :" + requestTime + " ms");
+      // console.log(
+      //   "RequestToCompletionOfDOMLoading :" + initDomTreeTime + " ms"
+      // );
+      // console.log("LoadEventTime :" + loadEventTime + " ms");
+      // // Time to first paint
+      // console.log("TimeToFirstPaint :" + firstPaintTime + " ms");
+
+
+      // console.log("your ip : ---- "+getUserIP());
+
+
+
+      var json2 = {"event":"WebPerfRUM",
+      " IP Address ": response.query,
+      "clientresponse":response,
+      "PageLoadTime":pageLoadTime,
+      "DOMInteractive":domInteractiveTime,
+      "DOMContentLoaded": dcl,
+      "DOMComplete":domCompleteTime,
+      "TotalTimeFromStartToLoad": loadTime,
+      "TimeSpentConstructingDOMTree": domReadyTime,
+      "TimeSpentDuringRedirection": redirectTime,
+      "AppCache": appcacheTime,
+      "TimeSpentUnloadingDocuments":unloadEventTime,
+      "TimeSpentDuringRequest": requestTime,
+      "LoadEventTime": loadEventTime,
+      "TimeToFirstPaint": firstPaintTime,
+      "Network Type ":network,
+    };
+
+
+  var data = JSON.stringify(json2,null,2);
+
+  console.log("json="+data); 
+
+
+  var encodedString = btoa(data); 
+
+
+   callRum(encodedString);
+
+       var f = performance.navigation;
+
+       var type = f.type;
+       var amount = f.redirectCount;
+
+      var json1 = {
+  "timeOrigin": performance.timeOrigin,
+        " IP Address ": response.query,
+
+  "timing": {
+    "navigationStart":t.navigationStart,
+    "unloadEventStart": t.unloadEventStart,
+    "unloadEventEnd": t.unloadEventEnd,
+    "redirectStart": t.redirectStart,
+    "redirectEnd": t.redirectEnd,
+    "fetchStart": t.fetchStart,
+    "domainLookupStart": t.domainLookupStart,
+    "domainLookupEnd": t.domainLookupEnd,
+    "connectStart": t.connectStart, 
+    "connectEnd": t.connectEnd,
+    "secureConnectionStart": t.secureConnectionStart,
+    "requestStart": t.requestStart,
+    "responseStart": t.responseStart,
+    "responseEnd": t.responseEnd,
+    "domLoading": t.domLoading,
+    "domInteractive": t.domInteractive,
+    "domContentLoadedEventStart": t.domContentLoadedEventStart,
+    "domContentLoadedEventEnd": t.domContentLoadedEventEnd,
+    "domComplete": t.domComplete,
+    "loadEventStart": t.loadEventStart,
+    "loadEventEnd": t.loadEventEnd,
+  },
+  "navigation": {
+    "type":type,
+    "redirectCount": amount,
+  }
+};
+
+      console.log("json2 =" + JSON.stringify(json1,null,2));
+
+       data = JSON.stringify(json1,null,2);
+
+  encodedString = btoa(data);
+  callRum(encodedString)
+
+      // var server = PerformanceServerTiming.toJSON();
+      // console.log("Server = " + JSON.stringify(server));
+      console.log("Network Type :"+network);
+
+      var connection =
+  navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+var type = connection.effectiveType;
+
+function updateConnectionStatus() {
+  console.log(
+    "Connection type changed from " + type + " to " + connection.type
+  );
+}
+
+connection.addEventListener("change", updateConnectionStatus);
+
+
+
+function callRum(encodedString){
+    $.ajax({
+        type: "GET",
+        // contentType: "application/json",
+        url: "http://localhost:8000/rumdata?data="+encodedString,
+        // data: JSON.stringify(search),
+        // dataType: 'json',
+        // cache: false,
+        // timeout: 600000,
+        success: function (data1) {
+          console.log(data1);
+           
+
+        },
+        error: function (e) {
+
+          console.log(e);
+
+        }
+    });
+}
+
+
+      },
+
+      function fail(data, status) {
+          console.log('Request failed.  Returned status of',
+                      status);
+      }
+  );
+     
+    
+
+}
+
+ipLookUp();
+
+
+//       getUserIP(function(ip){
+//     // console.log("Got IP! :" + ip);
+//     alert(ip);
+//     ipval=ip;
+// });
+      
+//       function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
+//     //compatibility for firefox and chrome
+//     var myPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+//     var pc = new myPeerConnection({
+//         iceServers: []
+//     }),
+//     noop = function() {},
+//     localIPs = {},
+//     ipRegex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g,
+//     key;
+
+//     function iterateIP(ip) {
+//         if (!localIPs[ip]) onNewIP(ip);
+//         localIPs[ip] = true;
+//     }
+
+//      //create a bogus data channel
+//     pc.createDataChannel("");
+
+//     // create offer and set local description
+//     pc.createOffer().then(function(sdp) {
+//         sdp.sdp.split('\n').forEach(function(line) {
+//             if (line.indexOf('candidate') < 0) return;
+//             line.match(ipRegex).forEach(iterateIP);
+//         });
+        
+//         pc.setLocalDescription(sdp, noop, noop);
+//     }).catch(function(reason) {
+//         // An error occurred, so handle the failure to connect
+//     });
+
+//     //listen for candidate events
+//     pc.onicecandidate = function(ice) {
+//         if (!ice || !ice.candidate || !ice.candidate.candidate || !ice.candidate.candidate.match(ipRegex)) return;
+//         ice.candidate.candidate.match(ipRegex).forEach(iterateIP);
+//     };
+// }
+
+// Usage
+
+   },
+    false
+  );
+}
+
+
+
+
+</script>
+
+</body>
+</html>
